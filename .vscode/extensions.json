@@ -5,6 +5,9 @@
     "recommendations": [
         "ms-vscode.PowerShell",
         "ryanluker.vscode-coverage-gutters",
-        "DavidAnson.vscode-markdownlint"
+        "DavidAnson.vscode-markdownlint",
+        "visualstudioexptteam.vscodeintellicode",
+        "visualstudioexptteam.intellicode-api-usage-examples",
+        "gruntfuggly.todo-tree"
     ]
 }

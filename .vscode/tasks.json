@@ -59,6 +59,36 @@
     },
     "tasks": [
         {
+            "label": "Sandbox",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${cwd}\\.vscode\\Sandbox.ps1"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build_intunewin",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${cwd}\\.vscode\\build_intunewin.ps1"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "label": ".",
             "type": "shell",
             "command": "$PSVersionTable;Invoke-Build -Task . -File '${workspaceFolder}/src/${workspaceFolderBasename}.build.ps1'",

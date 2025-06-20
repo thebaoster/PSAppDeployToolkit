@@ -99,7 +99,8 @@ $adtSession = @{
     AppRebootExitCodes = @(1641, 3010)
     AppScriptVersion = '1.0.0'
     AppScriptDate = '2000-12-31'
-    AppScriptAuthor = '<author name>'
+    AppScriptAuthor = 'bao nguyen'
+    CompanyName = 'Plains'
 
     # Install Titles (Only set here to override defaults set by the toolkit).
     InstallName = ''
@@ -110,6 +111,7 @@ $adtSession = @{
     DeployAppScriptVersion = '4.0.5'
     DeployAppScriptParameters = $PSBoundParameters
 }
+
 
 function Install-ADTDeployment
 {
@@ -157,6 +159,11 @@ function Install-ADTDeployment
 
     ## <Perform Post-Installation tasks here>
 
+    ## Copylog from the toolkit to the default log location to ProgramData\PSAppDeployToolkit\Logs.
+    <#if (!(Env:\ProgramData\$($adtSession.CompanyName)\PSAppDeployToolkit\Logs)){
+        New-Item -Path Env:\ProgramData\$($adtSession.CompanyName)\PSAppDeployToolkit\Logs -ItemType Directory -Force | Out-Null
+    }
+    Copy-ADTFile -Path "$($adtSession.LogTempFolder)/$($adtSession.LogName.log)" -Destination "$Env:ProgramData\$($adtSession.CompanyName)\PSAppDeployToolkit\Logs" -Force#>
 
     ## Display a message at the end of the install.
     if (!$adtSession.UseDefaultMsi)

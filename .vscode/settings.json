@@ -25,7 +25,12 @@
         ".gitattributes": true,
         ".github": true,
         ".gitignore": true,
+        "**/build/**/Assets": true,
+        "**/build/**/PS*": true,
+        "**/build/**/Strings": true,
+        "**/docs": true,
         "**/examples": true,
+        "**/lib": true,
         "COPYING.Lesser": true,
         "README.md": true
     }
