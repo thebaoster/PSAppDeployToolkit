@@ -19,5 +19,14 @@
     "powershell.codeFormatting.preset": "Allman",
     "powershell.codeFormatting.alignPropertyValuePairs": false,
     "powershell.powerShellDefaultVersion": "Windows PowerShell (x64)",
-    "dotnet.preferCSharpExtension": true
+    "dotnet.preferCSharpExtension": true,
+    "files.exclude": {
+        ".editorconfig": true,
+        ".gitattributes": true,
+        ".github": true,
+        ".gitignore": true,
+        "**/examples": true,
+        "COPYING.Lesser": true,
+        "README.md": true
+    }
 }
