@@ -22,7 +22,7 @@ $modulesToInstall = New-Object System.Collections.Generic.List[object]
 [void]$modulesToInstall.Add(([PSCustomObject]@{
             ModuleName    = 'PSScriptAnalyzer'
             ModuleVersion = '1.22.0'
-        }))#>
+        }))##>
 # https://github.com/PowerShell/platyPS
 # older version used due to: https://github.com/PowerShell/platyPS/issues/457
 [void]$modulesToInstall.Add(([PSCustomObject]@{
