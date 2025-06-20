@@ -88,7 +88,7 @@ param
 ##================================================
 
 $adtSession = @{
-    # TODO App variables.
+    # TODO:<App-Var> App variables.
     AppVendor = ''
     AppName = ''
     AppVersion = ''
@@ -120,7 +120,7 @@ function Install-ADTDeployment
     ##================================================
     $adtSession.InstallPhase = "Pre-$($adtSession.DeploymentType)"
 
-    ## TODO Show Welcome Message, close Internet Explorer if required, allow up to 3 deferrals, verify there is enough disk space to complete the install, and persist the prompt.
+    ## TODO:<Install-Pre> Show Welcome Message, close Internet Explorer if required, allow up to 3 deferrals, verify there is enough disk space to complete the install, and persist the prompt.
     Show-ADTInstallationWelcome -CloseProcesses iexplore -AllowDefer -DeferTimes 3 -CheckDiskSpace -PersistPrompt
 
     ## Show Progress Message (with the default message).
@@ -149,7 +149,7 @@ function Install-ADTDeployment
         }
     }
 
-    ## TODO <Perform Installation tasks here>
+    ## TODO:<Install-Start> <Perform Installation tasks here>
 
 
     ##================================================
@@ -157,7 +157,7 @@ function Install-ADTDeployment
     ##================================================
     $adtSession.InstallPhase = "Post-$($adtSession.DeploymentType)"
 
-    ## TODO <Perform Post-Installation tasks here>
+    ## TODO :<Install-Post><Perform Post-Installation tasks here>
 
     ## Copylog from the toolkit to the default log location to ProgramData\PSAppDeployToolkit\Logs.
     <#if (!(Env:\ProgramData\$($adtSession.CompanyName)\PSAppDeployToolkit\Logs)){
@@ -179,7 +179,7 @@ function Uninstall-ADTDeployment
     ##================================================
     $adtSession.InstallPhase = "Pre-$($adtSession.DeploymentType)"
 
-    ## TODO Uninstall Show Welcome Message, close Internet Explorer with a 60 second countdown before automatically closing.
+    ## TODO <Uninstall-Pre> Uninstall Show Welcome Message, close Internet Explorer with a 60 second countdown before automatically closing.
     Show-ADTInstallationWelcome -CloseProcesses iexplore -CloseProcessesCountdown 60
 
     ## Show Progress Message (with the default message).
@@ -204,7 +204,7 @@ function Uninstall-ADTDeployment
         Start-ADTMsiProcess @ExecuteDefaultMSISplat
     }
 
-    ## TODO <Perform Uninstallation tasks here>
+    ## TODO:<Uninstall-Start> <Perform Uninstallation tasks here>
 
 
     ##================================================
@@ -212,7 +212,7 @@ function Uninstall-ADTDeployment
     ##================================================
     $adtSession.InstallPhase = "Post-$($adtSession.DeploymentType)"
 
-    ## TODO <Perform Post-Uninstallation tasks here>
+    ## TODO:<Uninstall-Post> <Perform Post-Uninstallation tasks here>
 }
 
 function Repair-ADTDeployment
@@ -222,7 +222,7 @@ function Repair-ADTDeployment
     ##================================================
     $adtSession.InstallPhase = "Pre-$($adtSession.DeploymentType)"
 
-    ## TODO Repair Show Welcome Message, close Internet Explorer with a 60 second countdown before automatically closing.
+    ## TODO:<Repair-Pre> Repair Show Welcome Message, close Internet Explorer with a 60 second countdown before automatically closing.
     Show-ADTInstallationWelcome -CloseProcesses iexplore -CloseProcessesCountdown 60
 
     ## Show Progress Message (with the default message).
@@ -247,7 +247,7 @@ function Repair-ADTDeployment
         Start-ADTMsiProcess @ExecuteDefaultMSISplat
     }
 
-    ## TODO <Perform Repair tasks here>
+    ## TODO:<Repair-Start> <Perform Repair tasks here>
 
 
     ##================================================
@@ -255,7 +255,7 @@ function Repair-ADTDeployment
     ##================================================
     $adtSession.InstallPhase = "Post-$($adtSession.DeploymentType)"
 
-    ## TODO <Perform Post-Repair tasks here>
+    ## TODO:<Repair-Post> <Perform Post-Repair tasks here>
 }
 
 

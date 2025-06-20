@@ -10,6 +10,7 @@
     "files.autoGuessEncoding": true,
     "files.encoding": "utf8bom",
     "files.insertFinalNewline": true,
+    "files.defaultLanguage": "powershell",
 
     // When enabled, will trim trailing whitespace when you save a file.
     "files.trimTrailingWhitespace": true,
