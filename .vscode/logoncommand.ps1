@@ -66,4 +66,5 @@ if (Get-Content -Path "$Application\Invoke-AppDeployToolkit.ps1" | Select-String
 }
 
 # Begin
-Start-Process -FilePath .\$Application\Invoke-AppDeployToolkit -WindowStyle Maximized -Wait
+Start-Process -FilePath "powershell.exe" .\$Application\Invoke-AppDeployToolkit.ps1 -WindowStyle Maximized -Wait
+#Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File .\$($Application)\Invoke-AppDeployToolkit.ps1" -WindowStyle Maximized -Wait
