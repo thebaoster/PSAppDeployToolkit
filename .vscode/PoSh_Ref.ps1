@@ -1,2 +1,2 @@
 
-#New-ADTTemplate -Destination . -Name "MyAppDeployment"
+# New-ADTTemplate -Destination .\build -Name "devops"
