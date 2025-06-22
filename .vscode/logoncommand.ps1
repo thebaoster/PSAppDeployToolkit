@@ -1,7 +1,7 @@
 Set-Location -Path "$PSScriptRoot"
 $Application = (Get-ChildItem -Directory | Select-Object -First 1).Name
 
-if (Get-Content -Path "$Application\Deploy-Application.ps1" | Select-String "winget install") {
+if (Get-Content -Path "$Application\Invoke-AppDeployToolkit.ps1" | Select-String "winget install") {
 	Write-Host "Requires winget"
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 	$WebClient = New-Object System.Net.WebClient
@@ -66,4 +66,4 @@ if (Get-Content -Path "$Application\Deploy-Application.ps1" | Select-String "win
 }
 
 # Begin
-Start-Process -FilePath .\$Application\Deploy-Application.exe -WindowStyle Maximized -Wait
+Start-Process -FilePath .\$Application\Invoke-AppDeployToolkit -WindowStyle Maximized -Wait
