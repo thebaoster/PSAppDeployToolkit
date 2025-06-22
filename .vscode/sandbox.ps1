@@ -3,6 +3,8 @@
 
 # Copy Resources
 Copy-Item -Path ".vscode\$LogonCommand" -Destination "$Win32App\" -Recurse -Force -Verbose -ErrorAction Ignore
+Copy-Item -Path "apps\npp.8.8.1.portable" -Destination "$Win32App\" -Recurse -Force -Verbose -ErrorAction Ignore
+
 
 # Prepare Sandbox
 @"
