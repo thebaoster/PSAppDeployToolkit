@@ -1,4 +1,4 @@
-﻿@{
+@{
     BalloonText = @{
         # Text displayed in the balloon tip for successful completion of a deployment type.
         Complete = 'complete.'
@@ -123,7 +123,7 @@
             CountdownMessage = 'The {0} will automatically continue in:'
 
             # This is a custom message to display at the Welcome Screen window.
-            CustomMessage = ''
+            CustomMessage = 'To complete this fix, your VPN connection will be temporarily disconnected. Please save your work and close any sensitive applications before continuing. The VPN will reconnect automatically once the process is complete.'
         }
         Fluent = @{
             # The subtitle underneath the Application Title, e.g. Company Name. Using {0} will insert the Application Type, e.g. App "Install"
@@ -146,6 +146,10 @@
 
             # This is a phrase used to describe the process of installing the application.
             ButtonRightTextNoProcesses = 'Install'
+
+            # This is a custom message to display at the Welcome Screen window.
+            CustomMessage = 'To complete this fix, your VPN connection will be temporarily disconnected. Please save your work and close any sensitive applications before continuing. The VPN will reconnect automatically once the process is complete.'
+
         }
     }
 }

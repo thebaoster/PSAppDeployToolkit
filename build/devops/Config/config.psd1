@@ -1,4 +1,4 @@
-﻿@{
+@{
     Assets = @{
         # Specify filename of the logo.
         Logo = '..\Assets\AppIcon.png'

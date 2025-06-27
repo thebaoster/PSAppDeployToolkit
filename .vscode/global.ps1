@@ -5,7 +5,7 @@
 [string]$Application = "$(& git branch --show-current)"
 [string]$Cache = "$env:ProgramData\win32app\$Application"
 [string]$LogonCommand = "LogonCommand.ps1"
-[string]$ToolKit = "C:\Users\bAoster\Documents\VSC\PSAppDeployToolkit\build\devops"
+[string]$ToolKit = "C:\temp\git\PSAppDeployToolkit\build\devops"
 
 
 

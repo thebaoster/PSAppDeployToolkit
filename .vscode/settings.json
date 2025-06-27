@@ -29,8 +29,6 @@
         "**/build/**/*.exe": true,
         "**/build/**/Assets": true,
         "**/build/**/COPYING.Lesser": true,
-        "**/build/**/PS*": true,
-        "**/build/**/Strings": true,
         "**/docs": true,
         "**/examples": true,
         "**/lib": true,

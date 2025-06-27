@@ -89,16 +89,16 @@ param
 
 $adtSession = @{
     # TODO:<App-Var> App variables.
-    AppVendor = ''
-    AppName = ''
-    AppVersion = ''
-    AppArch = ''
+    AppVendor = 'Palo Alto'
+    AppName = 'Global Protect - Repair'
+    AppVersion = '6.2.7'
+    AppArch = 'x64'
     AppLang = 'EN'
     AppRevision = '01'
     AppSuccessExitCodes = @(0)
     AppRebootExitCodes = @(1641, 3010)
     AppScriptVersion = '1.0.0'
-    AppScriptDate = '2000-12-31'
+    AppScriptDate = '06/25/2025'
     AppScriptAuthor = 'bao nguyen'
     CompanyName = 'Plains'
 
@@ -110,8 +110,11 @@ $adtSession = @{
     DeployAppScriptFriendlyName = $MyInvocation.MyCommand.Name
     DeployAppScriptVersion = '4.0.5'
     DeployAppScriptParameters = $PSBoundParameters
-}
+    }
 
+    $envCompany = "$($envAllUsersProfile)\$($adtSession.CompanyName)"
+    $envUTemp = "$($adtSession.LogTempFolder)\$($adtSession.LogName)"
+    $envSTemp = "$($envWinDir)\Logs\Software\$($adtSession.LogName)"
 
 function Install-ADTDeployment
 {
@@ -121,13 +124,29 @@ function Install-ADTDeployment
     $adtSession.InstallPhase = "Pre-$($adtSession.DeploymentType)"
 
     ## TODO:<Install-Pre> Show Welcome Message, close Internet Explorer if required, allow up to 3 deferrals, verify there is enough disk space to complete the install, and persist the prompt.
-    Show-ADTInstallationWelcome -CloseProcesses iexplore -AllowDefer -DeferTimes 3 -CheckDiskSpace -PersistPrompt
+    #Show-ADTInstallationWelcome -CloseProcesses PANGPA.EXE, PANGPS.EXE -AllowDefer -DeferTimes 3 -CheckDiskSpace -PersistPrompt
+    Show-ADTInstallationPrompt -Message 'To complete this fix, your VPN connection will be temporarily disconnected. Please save your work and close any sensitive applications before continuing. The VPN will reconnect automatically once the process is complete.' -ButtonRightText 'OK' -Icon Information
+
 
     ## Show Progress Message (with the default message).
     Show-ADTInstallationProgress
 
     ## <Perform Pre-Installation tasks here>
+    #Remove Palo Alto Networks from all user registry
+    Invoke-ADTAllUsersRegistryAction {
+        Remove-ADTRegistryKey -Key 'HKCU\SOFTWARE\Palo Alto Networks' -Recurse
+    }
+    #Remove Palo Alto Networks from all system registry
+    Remove-ADTRegistryKey -Key 'HKLM\SOFTWARE\Palo Alto Networks' -Recurse
 
+    #Uninstall all Global Protect
+    Uninstall-ADTApplication -ApplicationType 'MSI' -FilterScript { $_.DisplayName -match 'GlobalProtect' } -Verbose
+
+    #Copy Pala Alto Global Protect installer to Plains company folder.
+
+    if (-not (Test-Path -Path "$($envCompany)\$($adtSession.AppVendor) $($adtSession.AppName)\$($adtSession.AppVersion)")){
+    Copy-ADTFile -Path "$($adtSession.ScriptDirectory)\*" -Destination "$($envCompany)\$($adtSession.AppVendor) $($adtSession.AppName)\$($adtSession.AppVersion)\"
+    }
 
     ##================================================
     ## MARK: Install
@@ -150,7 +169,8 @@ function Install-ADTDeployment
     }
 
     ## TODO:<Install-Start> <Perform Installation tasks here>
-
+    #Install Global Protect
+    Start-ADTMsiProcess -Action 'Install' -FilePath 'GlobalProtect64-6.2.7.msi' -ArgumentList '/QN /norestart portal=vpnportal.plains.com'
 
     ##================================================
     ## MARK: Post-Install
@@ -159,16 +179,38 @@ function Install-ADTDeployment
 
     ## TODO :<Install-Post><Perform Post-Installation tasks here>
 
-    ## Copylog from the toolkit to the default log location to ProgramData\PSAppDeployToolkit\Logs.
-    <#if (!(Env:\ProgramData\$($adtSession.CompanyName)\PSAppDeployToolkit\Logs)){
-        New-Item -Path Env:\ProgramData\$($adtSession.CompanyName)\PSAppDeployToolkit\Logs -ItemType Directory -Force | Out-Null
+    #Create detection log
+    if (!(Test-Path -Path "$($envAllUsersProfile)\$($adtSession.CompanyName)"))
+    {
+        New-Item -Path "$envCompany" -ItemType Directory -Force | Out-Null
+        New-Item -Path "$($envCompany)\$($adtSession.AppVendor) $($adtSession.AppName)\$($adtSession.AppVersion)" -ItemType Directory -Force | Out-Null
+        New-Item -Path "$($envCompany)\$($adtSession.AppVendor) $($adtSession.AppName)\$($adtSession.AppVersion)\detection.log" -ItemType File -Force | Out-Null
+    }else {
+        New-Item -Path "$($envCompany)\$($adtSession.AppVendor) $($adtSession.AppName)\$($adtSession.AppVersion)" -ItemType Directory -Force | Out-Null
+        New-Item -Path "$($envCompany)\$($adtSession.AppVendor) $($adtSession.AppName)\$($adtSession.AppVersion)\detection.log" -ItemType File -Force | Out-Null
     }
-    Copy-ADTFile -Path "$($adtSession.LogTempFolder)/$($adtSession.LogName.log)" -Destination "$Env:ProgramData\$($adtSession.CompanyName)\PSAppDeployToolkit\Logs" -Force#>
+
+    ## Copylog from the toolkit from the default log location to ProgramData\PSAppDeployToolkit\Logs.
+    # Ensure the log directory exists
+    if (!(Test-Path -Path "$envCompany\PSAppDeployToolkit\Logs"))
+    {
+        New-Item -Path "$($envCompany)\PSAppDeployToolkit\Logs" -ItemType Directory -Force | Out-Null
+    }
+
+    # Determine source path and copy the log file
+    if (Test-Path -Path $envUTemp)
+    {
+        Copy-ADTFile -Path "$envUTemp" -Destination "$($envCompany)\PSAppDeployToolkit\Logs"
+    }
+    else
+    {
+        Copy-ADTFile -Path "$envSTemp" -Destination "$($envCompany)\PSAppDeployToolkit\Logs"
+    }
 
     ## Display a message at the end of the install.
     if (!$adtSession.UseDefaultMsi)
     {
-        Show-ADTInstallationPrompt -Message 'You can customize text to appear at the end of an install or remove it completely for unattended installations.' -ButtonRightText 'OK' -Icon Information -NoWait
+        #Show-ADTInstallationPrompt -Message 'You can customize text to appear at the end of an install or remove it completely for unattended installations.' -ButtonRightText 'OK' -Icon Information -NoWait
     }
 }
 
@@ -223,13 +265,22 @@ function Repair-ADTDeployment
     $adtSession.InstallPhase = "Pre-$($adtSession.DeploymentType)"
 
     ## TODO:<Repair-Pre> Repair Show Welcome Message, close Internet Explorer with a 60 second countdown before automatically closing.
-    Show-ADTInstallationWelcome -CloseProcesses iexplore -CloseProcessesCountdown 60
+    #Show-ADTInstallationWelcome -CustomText
+    Show-ADTInstallationPrompt -Message 'To complete this fix, your VPN connection will be temporarily disconnected. Please save your work and close any sensitive applications before continuing. The VPN will reconnect automatically once the process is complete.' -ButtonRightText 'OK' -Icon Information -NoWait
 
     ## Show Progress Message (with the default message).
     Show-ADTInstallationProgress
 
     ## <Perform Pre-Repair tasks here>
 
+    Invoke-ADTAllUsersRegistryAction {
+        Remove-ADTRegistryKey -Key 'HKCU\SOFTWARE\Palo Alto Networks' -Recurse
+    }
+    #Remove Palo Alto Networks from all system registry
+    Remove-ADTRegistryKey -Key 'HKLM\SOFTWARE\Palo Alto Networks' -Recurse
+
+    #Uninstall all Global Protect
+    Uninstall-ADTApplication -ApplicationType 'MSI' -FilterScript { $_.DisplayName -match 'GlobalProtect' } -Verbose
 
     ##================================================
     ## MARK: Repair
@@ -249,6 +300,8 @@ function Repair-ADTDeployment
 
     ## TODO:<Repair-Start> <Perform Repair tasks here>
 
+    Start-ADTMsiProcess -Action 'Install' -FilePath 'GlobalProtect64-6.2.7.msi' -ArgumentList '/QN /norestart portal=vpnportal.plains.com'
+
 
     ##================================================
     ## MARK: Post-Repair
@@ -256,6 +309,24 @@ function Repair-ADTDeployment
     $adtSession.InstallPhase = "Post-$($adtSession.DeploymentType)"
 
     ## TODO:<Repair-Post> <Perform Post-Repair tasks here>
+    ## Copylog from the toolkit from the default log location to ProgramData\PSAppDeployToolkit\Logs.
+    #Set
+
+    # Ensure the log directory exists
+    if (!(Test-Path -Path "$envPlains"))
+    {
+        New-Item -Path "$($envAllUsersProfile)\$($adtSession.CompanyName)\PSAppDeployToolkit\Logs" -ItemType Directory -Force | Out-Null
+    }
+
+    # Determine source path and copy the log file
+    if (Test-Path -Path $envUTemp)
+    {
+        Copy-ADTFile -Path "$envUTemp" -Destination "$($envCompany)\PSAppDeployToolkit\Logs"
+    }
+    else
+    {
+        Copy-ADTFile -Path "$envSTemp" -Destination "$($envCompany)\PSAppDeployToolkit\Logs"
+    }
 }
 
 
@@ -325,4 +396,3 @@ finally
 {
     Remove-Module -Name PSAppDeployToolkit* -Force
 }
-
