@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__superIT-agent__get_device_compliance",
+      "mcp__superIT-agent__get_intune_devices_by_user"
+    ]
+  }
+}
